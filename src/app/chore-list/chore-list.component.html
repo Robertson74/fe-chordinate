@@ -1,1 +1,11 @@
-<button mat-button>Test</button>
+<div class="chore-list-container">
+  <div class="header">
+    <h1><u>Chores</u></h1>
+  </div>
+  <div cdkDropList class="chore-list" (cdkDropListDropped)="drop($event)">
+    <div class="chore-box" *ngFor="let chore of chores" cdkDrag>
+      <div class="chore-custom-placeholder" *cdkDragPlaceholder></div>
+      {{chore.description}}
+    </div>
+  </div>
+</div>
