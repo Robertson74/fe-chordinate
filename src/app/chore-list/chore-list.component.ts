@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { ChoresService } from '../chores/chores.service';
+import { Chore } from '../chores/chore.model';
 
 @Component({
   selector: 'app-chore-list',
@@ -8,22 +10,34 @@ import {CdkDragDrop, moveItemInArray} from '@angular/cdk/drag-drop';
 })
 export class ChoreListComponent implements OnInit {
 
-  chores = [];
+  chores: Array<Chore> = [];
 
-  constructor() { }
+  constructor(
+    private readonly choreService: ChoresService,
+  ) { }
 
-  ngOnInit() {
-    this.chores = [
-      { description: 'Wash Sheets' },
-      { description: 'Clean Toilets' },
-      { description: 'Clean Bathrooms' },
-      { description: 'Vacuum' },
-      { description: 'Wash Towels' },
-    ];
+  async ngOnInit() {
+    this.chores = await this.choreService.getChores();
+    this.chores = this.sortChores(this.chores);
   }
 
-  drop(event: CdkDragDrop<string[]>) {
+  async drop(event: CdkDragDrop<string[]>) {
     moveItemInArray(this.chores, event.previousIndex, event.currentIndex);
+    this.chores = this.updateChoreListPositions(this.chores);
+    await this.choreService.saveChores(this.chores);
+  }
+
+  updateChoreListPositions(chores: Array<Chore>) {
+    chores.forEach((chore: Chore, index: number) => {
+      chore.listPosition  = index;
+    });
+    return chores;
+  }
+
+  sortChores(chores: Array<Chore>) {
+    return chores.sort((a, b) => {
+      return a.listPosition - b.listPosition;
+    });
   }
 
 }
