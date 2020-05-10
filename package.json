@@ -2,6 +2,7 @@
   "name": "fe-choredinate",
   "version": "0.0.0",
   "scripts": {
+    "dev": "ng serve --port 5000",
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
